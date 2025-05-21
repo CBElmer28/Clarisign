@@ -17,8 +17,12 @@ public class RevisarSolicitudesInterpreteView extends JFrame {
 
     private JComboBox<Sesion> cbSolicitudes;
     private JButton btnAceptar;
-    
-    public RevisarSolicitudesInterpreteView(int idInterprete) {
+    private DashboardInterpreteView dashboard; // Referencia al dashboard
+
+    // Constructor modificado para recibir dashboard
+    public RevisarSolicitudesInterpreteView(int idInterprete, DashboardInterpreteView dashboard) {
+        this.dashboard = dashboard; // Guardamos la referencia
+
         setTitle("Solicitudes en Revisión");
         setSize(500, 300);
         setLocationRelativeTo(null);
@@ -60,6 +64,12 @@ public class RevisarSolicitudesInterpreteView extends JFrame {
             if (controller.actualizarEstadoSesion(sesion)) {
                 JOptionPane.showMessageDialog(this, "Solicitud aceptada. La sesión está en espera.");
                 cbSolicitudes.removeItem(sesion);
+
+                if (dashboard != null) {
+                    dashboard.cargarSesiones(); // Actualiza el dashboard del intérprete
+                }
+
+                dispose(); // Cierra esta ventana si quieres
             } else {
                 JOptionPane.showMessageDialog(this, "No se pudo aceptar la solicitud.");
             }

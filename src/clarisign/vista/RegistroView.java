@@ -21,7 +21,11 @@ public class RegistroView extends JFrame {
     private JTextField txtDiagnostico;
     private JButton btnRegistrar;
     
+    private DashboardPacienteView dashboard;
+    
     public RegistroView() {
+        this.dashboard = dashboard;
+        
         setTitle("Registro de Paciente");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -61,6 +65,9 @@ public class RegistroView extends JFrame {
         RegistroController controller = new RegistroController();
         if (controller.registrarPaciente(paciente)) {
             JOptionPane.showMessageDialog(this, "Registro exitoso.");
+            if (dashboard != null) {
+                dashboard.cargarSesiones(); // ✅ Actualiza el dashboard
+            }            
             dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Error al registrar el paciente.");

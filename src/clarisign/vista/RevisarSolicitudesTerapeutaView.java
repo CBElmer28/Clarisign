@@ -21,8 +21,11 @@ public class RevisarSolicitudesTerapeutaView extends JFrame {
     private JComboBox<Interprete> cbInterpretes;
     private JTextField txtFechaHora;
     private JButton btnAsignar;
+    private DashboardTerapeutaView dashboard;
 
-    public RevisarSolicitudesTerapeutaView(int idTerapeuta) {
+    public RevisarSolicitudesTerapeutaView(int idTerapeuta, DashboardTerapeutaView dashboard) {
+        this.dashboard=dashboard;
+        
         setTitle("Revisar Solicitudes de Sesión");
         setSize(600, 400);
         setLocationRelativeTo(null);
@@ -81,36 +84,41 @@ public class RevisarSolicitudesTerapeutaView extends JFrame {
     }
 
     private void asignarSesion() {
-        try {
-            ComboItemSesion item = (ComboItemSesion) cbSolicitudes.getSelectedItem();
-            if (item == null) {
-                JOptionPane.showMessageDialog(this, "Selecciona una solicitud.");
-                return;
-            }
-
-            Sesion sesion = item.getSesion();
-            Interprete interprete = (Interprete) cbInterpretes.getSelectedItem();
-
-            String fechaHoraStr = txtFechaHora.getText().trim();
-            LocalDateTime fechaHora = LocalDateTime.parse(fechaHoraStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-
-            sesion.setIdInterprete(interprete.getId());
-            sesion.setFechaHora(fechaHora);
-            sesion.setEstado("en revision");
-
-            SesionController controller = new SesionController();
-            if (controller.asignarDetallesSesion(sesion)) {
-                JOptionPane.showMessageDialog(this, "Sesión programada en revisión.");
-                cbSolicitudes.removeItem(item);
-                txtFechaHora.setText("");
-            } else {
-                JOptionPane.showMessageDialog(this, "No se pudo asignar.");
-            }
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al asignar: " + e.getMessage());
+    try {
+        ComboItemSesion item = (ComboItemSesion) cbSolicitudes.getSelectedItem();
+        if (item == null) {
+            JOptionPane.showMessageDialog(this, "Selecciona una solicitud.");
+            return;
         }
+
+        Sesion sesion = item.getSesion();
+        Interprete interprete = (Interprete) cbInterpretes.getSelectedItem();
+
+        String fechaHoraStr = txtFechaHora.getText().trim();
+        LocalDateTime fechaHora = LocalDateTime.parse(fechaHoraStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
+        sesion.setIdInterprete(interprete.getId());
+        sesion.setFechaHora(fechaHora);
+        sesion.setEstado("en revision");
+
+        SesionController controller = new SesionController();
+        if (controller.asignarDetallesSesion(sesion)) {
+            JOptionPane.showMessageDialog(this, "Sesión programada en revisión.");
+            cbSolicitudes.removeItem(item);
+            txtFechaHora.setText("");
+
+            if (dashboard != null) {
+                dashboard.cargarSesiones(); // ✅ Actualiza el dashboard
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo asignar.");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Error al asignar: " + e.getMessage());
     }
+}
 
     // Clase auxiliar para mostrar sesiones con nombre del paciente
     private class ComboItemSesion {

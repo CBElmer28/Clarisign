@@ -31,23 +31,22 @@ public class DashboardPacienteView extends JFrame {
 
         // Botones
         JButton btnSolicitarSesion = new JButton("Solicitar Sesión");
-        btnSolicitarSesion.addActionListener(e -> new SolicitudSesionPacienteView(idPaciente));
-
-        JButton btnActualizar = new JButton("Actualizar");
-        btnActualizar.addActionListener(e -> cargarSesiones());
+        btnSolicitarSesion.addActionListener(e -> { new SolicitudSesionPacienteView(idPaciente, this);
+        cargarSesiones();});
         
         JButton btnIngresarSesion = new JButton("Ingresar a la Sesión");
-        btnIngresarSesion.addActionListener(e -> ingresarSesion());
+        btnIngresarSesion.addActionListener(e -> { ingresarSesion();
+        cargarSesiones();});
         
         JButton btnCerrarSesion = new JButton("Cerrar Sesión");
         btnCerrarSesion.addActionListener(e -> {
             dispose(); // Cierra el panel actual
             new LoginView().setVisible(true);
+                    cargarSesiones();
         });
 
         JPanel panelBotones = new JPanel();
         panelBotones.add(btnSolicitarSesion);
-        panelBotones.add(btnActualizar);
         panelBotones.add(btnIngresarSesion);
         panelBotones.add(btnCerrarSesion);
 
@@ -59,7 +58,7 @@ public class DashboardPacienteView extends JFrame {
         setVisible(true);
     }
 
-    private void cargarSesiones() {
+    public void cargarSesiones() {
         try (Connection conn = DBConnection.getConnection()) {
             SesionDAO dao = new SesionDAO(conn);
             InterpreteDAO interpreteDAO = new InterpreteDAO(conn);

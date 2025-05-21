@@ -20,13 +20,16 @@ public class SolicitudSesionPacienteView extends javax.swing.JFrame {
     
     private JComboBox<Terapeuta> cbTerapeutas;
     private JButton btnSolicitar;
+    private DashboardPacienteView dashboard;
     
     private int idPaciente;
     /**
      * Creates new form SolicitudSesionPacienteView
      */
-    public SolicitudSesionPacienteView(int idPaciente) {
+    public SolicitudSesionPacienteView(int idPaciente, DashboardPacienteView dashboard) {
+        this.dashboard=dashboard;
         this.idPaciente = idPaciente;
+        
         setTitle("Solicitar Sesión");
         setSize(400, 200);
         setLocationRelativeTo(null);
@@ -76,6 +79,9 @@ public class SolicitudSesionPacienteView extends javax.swing.JFrame {
             SolicitudSesionController controller = new SolicitudSesionController();
             if (controller.enviarSolicitud(sesion)) {
                 JOptionPane.showMessageDialog(this, "Solicitud enviada al terapeuta.");
+                if (dashboard != null) {
+                dashboard.cargarSesiones(); // ✅ Refresca la tabla
+            }
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Error al enviar la solicitud.");
