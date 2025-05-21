@@ -20,7 +20,7 @@ public class DashboardTerapeutaView extends JFrame {
     public DashboardTerapeutaView(int idTerapeuta) {
         this.idTerapeuta = idTerapeuta;
         setTitle("Panel del Terapeuta");
-        setSize(900, 500);
+        setSize(1000, 500);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -30,33 +30,55 @@ public class DashboardTerapeutaView extends JFrame {
         JScrollPane scrollPane = new JScrollPane(tablaSesiones);
 
         // Botones
-        JButton btnActualizar = new JButton("Actualizar");
-        btnActualizar.addActionListener(e -> cargarSesiones());
-
         JButton btnRevisarSolicitudes = new JButton("Revisar Solicitudes");
-        btnRevisarSolicitudes.addActionListener(e -> new RevisarSolicitudesTerapeutaView(idTerapeuta));
+        btnRevisarSolicitudes.addActionListener(e -> { 
+            new RevisarSolicitudesTerapeutaView(idTerapeuta, this);
+            cargarSesiones();});
 
         JButton btnCerrarSesion = new JButton("Cerrar Sesión");
         btnCerrarSesion.addActionListener(e -> {
+            cargarSesiones();
             dispose();
             new LoginView().setVisible(true);
         });
 
         JButton btnRegistrarPaciente = new JButton("Registrar Paciente");
-        btnRegistrarPaciente.addActionListener(e -> new RegistroView());
+        btnRegistrarPaciente.addActionListener(e -> { 
+            new RegistroView();
+            cargarSesiones();
+        });
 
         JButton btnMarcarEnCurso = new JButton("Marcar como En Curso");
-        btnMarcarEnCurso.addActionListener(e -> marcarSesionEnCurso());
+        btnMarcarEnCurso.addActionListener(e -> { 
+            marcarSesionEnCurso();
+            cargarSesiones();});
 
         JButton btnIngresarSesion = new JButton("Ingresar a la Sesión");
-        btnIngresarSesion.addActionListener(e -> ingresarSesion());
+        btnIngresarSesion.addActionListener(e -> { 
+            ingresarSesion();
+            cargarSesiones();}
+        );
+        
+        JButton btnFinalizarSesion = new JButton("Finalizar Sesión");
+        btnFinalizarSesion.addActionListener(e -> {
+            finalizarSesion();
+            cargarSesiones();
+        });
+        
+        JButton btnEliminarSesion = new JButton("Eliminar Sesión");
+        btnEliminarSesion.addActionListener(e -> {
+            eliminarSesionFinalizada();
+            cargarSesiones();
+        });
+
 
         JPanel panelBotones = new JPanel();
         panelBotones.add(btnRevisarSolicitudes);
         panelBotones.add(btnRegistrarPaciente);
-        panelBotones.add(btnActualizar);
         panelBotones.add(btnMarcarEnCurso);
         panelBotones.add(btnIngresarSesion);
+        panelBotones.add(btnFinalizarSesion);
+        panelBotones.add(btnEliminarSesion);
         panelBotones.add(btnCerrarSesion);
 
         add(new JLabel("Sesiones Asignadas", SwingConstants.CENTER), BorderLayout.NORTH);
@@ -67,7 +89,7 @@ public class DashboardTerapeutaView extends JFrame {
         setVisible(true);
     }
 
-    private void cargarSesiones() {
+    public void cargarSesiones() {
         try (Connection conn = DBConnection.getConnection()) {
             SesionDAO dao = new SesionDAO(conn);
             PacienteDAO pacienteDAO = new PacienteDAO(conn);
@@ -149,6 +171,58 @@ public class DashboardTerapeutaView extends JFrame {
         JOptionPane.showMessageDialog(this, "Ingresando a la sesión ID: " + idSesion);
         new VideoLlamadaSimuladaView();
     }
+    
+    private void finalizarSesion() {
+        int fila = tablaSesiones.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Selecciona una sesión.");
+            return;
+        }
+
+        String estado = tablaSesiones.getValueAt(fila, 4).toString();
+        if (!"en curso".equalsIgnoreCase(estado)) {
+            JOptionPane.showMessageDialog(this, "Solo puedes finalizar sesiones 'en curso'.");
+            return;
+        }
+
+        int idSesion = (int) tablaSesiones.getValueAt(fila, 0);
+
+        try (Connection conn = DBConnection.getConnection()) {
+            SesionDAO dao = new SesionDAO(conn);
+            dao.actualizarEstado(idSesion, "finalizado");
+            JOptionPane.showMessageDialog(this, "Sesión marcada como 'finalizado'.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al finalizar sesión: " + e.getMessage());
+        }
+    }
+    
+    private void eliminarSesionFinalizada() {
+        int fila = tablaSesiones.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Selecciona una sesión.");
+            return;
+        }
+
+        String estado = tablaSesiones.getValueAt(fila, 4).toString();
+        if (!"finalizado".equalsIgnoreCase(estado)) {
+            JOptionPane.showMessageDialog(this, "Solo puedes eliminar sesiones con estado 'finalizado'.");
+            return;
+        }
+
+        int idSesion = (int) tablaSesiones.getValueAt(fila, 0);
+
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Estás seguro de eliminar la sesión ID: " + idSesion + "?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        try (Connection conn = DBConnection.getConnection()) {
+            SesionDAO dao = new SesionDAO(conn);
+            dao.eliminarSesion(idSesion);
+            JOptionPane.showMessageDialog(this, "Sesión eliminada correctamente.");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al eliminar sesión: " + e.getMessage());
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.

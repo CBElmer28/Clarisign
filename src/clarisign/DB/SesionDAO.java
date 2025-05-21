@@ -125,6 +125,14 @@ public class SesionDAO {
         }
     }
     
+    public void eliminarSesion(int idSesion) throws SQLException {
+    String sql = "DELETE FROM sesiones WHERE id = ?";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, idSesion);
+        stmt.executeUpdate();
+        }
+    }
+    
     public List<Sesion> obtenerSolicitudesParaInterprete(int idInterprete) throws SQLException {
     List<Sesion> lista = new ArrayList<>();
     String sql = "SELECT * FROM sesiones WHERE idInterprete = ? AND estado = 'en revision'";
