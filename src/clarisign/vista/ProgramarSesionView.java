@@ -48,7 +48,7 @@ public class ProgramarSesionView extends JFrame {
         btnProgramar.addActionListener(e -> programarSesion());
 
         cargarCombos();
-
+        aplicarEstilos();
         setVisible(true);
     }
     
@@ -126,6 +126,41 @@ public class ProgramarSesionView extends JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void aplicarEstilos() {
+        // Colores base
+    Color blanco = Color.WHITE;
+    Color grisClaro = new Color(245, 245, 245);
+    Color moradoPastel = new Color(180, 140, 200);
+    Color textoMorado = new Color(100, 60, 130);
+
+    // Fuentes
+    Font fuenteLabel = new Font("SansSerif", Font.BOLD, 13);
+    Font fuenteCampo = new Font("SansSerif", Font.PLAIN, 13);
+    Font fuenteBoton = new Font("SansSerif", Font.BOLD, 14);
+
+    // Fondo general
+    getContentPane().setBackground(grisClaro);
+
+    // Aplicar estilos a los componentes
+    Component[] componentes = getContentPane().getComponents();
+    for (Component c : componentes) {
+        if (c instanceof JLabel label) {
+            label.setFont(fuenteLabel);
+            label.setForeground(textoMorado);
+        } else if (c instanceof JComboBox<?> combo) {
+            combo.setFont(fuenteCampo);
+        } else if (c instanceof JTextField field) {
+            field.setFont(fuenteCampo);
+        } else if (c instanceof JButton btn) {
+            btn.setFont(fuenteBoton);
+            btn.setBackground(moradoPastel);
+            btn.setForeground(blanco);
+            btn.setFocusPainted(false);
+            btn.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        }
+    }
+    }
 
     /**
      * @param args the command line arguments

@@ -3,36 +3,21 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/vista/SolicitudSesionPacienteView.java</file>
+            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/modelo/Interprete.java</file>
             <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/modelo/Mensaje.java</file>
             <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/DB/DBConnection.java</file>
             <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/vista/DashboardPacienteView.java</file>
             <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/modelo/Paciente.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/vista/RevisarSolicitudesInterpreteView.java</file>
+            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/DB/TerapeutaDAO.java</file>
             <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/modelo/Sesion.java</file>
             <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/DB/DBSetup.sql</file>
             <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/vista/DashboardInterpreteView.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/modelo/ValidarDatos.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/vista/DashboardTerapeutaView.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/modelo/Terapeuta.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/controlador/VideoLlamadaController.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/modelo/Interprete.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/vista/ProgramarSesionView.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/vista/RegistroView.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/controlador/RegistroController.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/DB/TerapeutaDAO.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/DB/UsuarioDAO.java</file>
             <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/DB/PacienteDAO.java</file>
             <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/DB/SesionDAO.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/vista/LoginView.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/modelo/Usuario.java</file>
+            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/vista/DashboardTerapeutaView.java</file>
             <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/ClariSign.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/vista/VideoLlamadaSimuladaView.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/controlador/SolicitudSesionController.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/vista/RevisarSolicitudesTerapeutaView.java</file>
             <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/controlador/SesionController.java</file>
             <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/DB/InterpreteDAO.java</file>
-            <file>file:/C:/Users/MARCE/Documents/NetBeansProjects/ClariSign/src/clarisign/controlador/LoginController.java</file>
         </group>
     </open-files>
 </project-private>

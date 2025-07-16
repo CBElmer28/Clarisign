@@ -5,6 +5,7 @@
 package clarisign.DB;
 
 import java.sql.*;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UsuarioDAO {
     private Connection conn;
@@ -14,17 +15,20 @@ public class UsuarioDAO {
     }
 
     public int autenticar(String correo, String contrasena, String tabla) throws SQLException {
-        String sql = "SELECT * FROM " + tabla + " WHERE correo = ? AND contrasena = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, correo);
-            stmt.setString(2, contrasena);
-            ResultSet rs = stmt.executeQuery();
-            if(rs.next()){
+    String sql = "SELECT id, contrasena FROM " + tabla + " WHERE correo = ?";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, correo);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            String hashEnBase = rs.getString("contrasena");
+            if (BCrypt.checkpw(contrasena, hashEnBase)) {
                 return rs.getInt("id");
             }
         }
-        return -1;
     }
+    return -1;
+}
+
     
     public UsuarioAutenticado detectarTipoUsuario(String correo, String contrasena) throws SQLException {
         int id;

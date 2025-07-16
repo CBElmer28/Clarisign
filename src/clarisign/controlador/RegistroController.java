@@ -8,6 +8,8 @@ import clarisign.DB.DBConnection;
 import clarisign.DB.*;
 import clarisign.modelo.Paciente;
 import java.sql.Connection;
+import org.mindrot.jbcrypt.BCrypt;
+
 
 /**
  *
@@ -16,13 +18,20 @@ import java.sql.Connection;
 public class RegistroController {
         
     public boolean registrarPaciente(Paciente paciente) {
-        try (Connection conn = DBConnection.getConnection()) {
-            PacienteDAO dao = new PacienteDAO(conn);
-            dao.agregarPaciente(paciente);
-            return true;
+    try (Connection conn = DBConnection.getConnection()) {
+        PacienteDAO dao = new PacienteDAO(conn);
+
+        // 🔐 Hashear la contraseña antes de enviar al DAO
+        String contraseñaOriginal = paciente.getContrasena();
+        String contraseñaHasheada = BCrypt.hashpw(contraseñaOriginal, BCrypt.gensalt(10));
+        paciente.setContrasena(contraseñaHasheada);
+
+        dao.agregarPaciente(paciente);
+        return true;
     } catch (Exception e) {
         e.printStackTrace();
         return false;
     }
 }
+
 }

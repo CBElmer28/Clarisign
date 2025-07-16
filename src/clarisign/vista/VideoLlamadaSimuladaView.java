@@ -73,16 +73,35 @@ public class VideoLlamadaSimuladaView extends JFrame {
             // Puedes agregar aquí el retorno al dashboard si se pasa referencia o contexto
         });
 
+        aplicarEstilos();
         setVisible(true);
     }
 
     private JLabel crearPanelCamara(String titulo) {
         JLabel camara = new JLabel(titulo, SwingConstants.CENTER);
+        camara.setVerticalTextPosition(SwingConstants.BOTTOM);
+        camara.setHorizontalTextPosition(SwingConstants.CENTER);
+        camara.setFont(new Font("SansSerif", Font.BOLD, 12));
+        camara.setForeground(Color.DARK_GRAY);
         camara.setOpaque(true);
         camara.setBackground(Color.LIGHT_GRAY);
         camara.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        camara.setPreferredSize(new Dimension(300, 200));
-        return camara;
+
+    // Carga la imagen desde assets
+    String nombreImagen = titulo.contains("Terapeuta") ? "cam_terapeuta.png" : "cam_interprete.png";
+    String ruta = "/clarisign/vista/assets/" + nombreImagen;
+    
+    try {
+        ImageIcon icono = new ImageIcon(getClass().getResource(ruta));
+        Image imagen = icono.getImage().getScaledInstance(300, 200, Image.SCALE_SMOOTH);
+        camara.setIcon(new ImageIcon(imagen));
+    } catch (Exception e) {
+        camara.setText(titulo + " (imagen no encontrada)");
+        System.err.println("No se pudo cargar la imagen: " + ruta);
+    }
+
+    camara.setPreferredSize(new Dimension(300, 200));
+    return camara;
     }
 
     public void mostrarMensaje(String mensaje) {
@@ -111,6 +130,37 @@ public class VideoLlamadaSimuladaView extends JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void aplicarEstilos() {
+    Color moradoPastel = new Color(180, 140, 200);
+    Color grisClaro = new Color(245, 245, 245);
+    Color blanco = Color.WHITE;
+    Font fuenteGeneral = new Font("SansSerif", Font.PLAIN, 14);
+    Font fuenteTitulo = new Font("SansSerif", Font.BOLD, 16);
+
+    getContentPane().setBackground(grisClaro);
+    areaSimulacion.setFont(fuenteGeneral);
+    areaSimulacion.setBackground(Color.WHITE);
+    areaSimulacion.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200)));
+
+    txtMensaje.setFont(fuenteGeneral);
+    txtMensaje.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+
+    btnEnviar.setBackground(moradoPastel);
+    btnEnviar.setForeground(blanco);
+    btnEnviar.setFocusPainted(false);
+    btnEnviar.setFont(fuenteGeneral);
+
+    btnFinalizar.setBackground(Color.RED.darker());
+    btnFinalizar.setForeground(blanco);
+    btnFinalizar.setFocusPainted(false);
+    btnFinalizar.setFont(fuenteGeneral);
+
+    btnSalir.setBackground(new Color(100, 60, 130));
+    btnSalir.setForeground(blanco);
+    btnSalir.setFocusPainted(false);
+    btnSalir.setFont(fuenteGeneral);
+    }
 
     /**
      * @param args the command line arguments

@@ -44,30 +44,32 @@ public class SesionDAO {
 
     // Método general para evitar código repetido
     private List<Sesion> listarSesiones(String campo, int id) throws SQLException {
-        List<Sesion> lista = new ArrayList<>();
-        String sql = "SELECT * FROM sesiones WHERE " + campo + " = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Timestamp ts = rs.getTimestamp("fechaHora");
-                LocalDateTime fechaHora = convertirTimestampSeguro(ts);
+    List<Sesion> lista = new ArrayList<>();
+    String sql = "SELECT * FROM sesiones WHERE " + campo + " = ? " +
+             "AND estado NOT IN ('finalizado', 'cancelada') " +
+             "AND (fechaHora IS NULL OR fechaHora >= NOW())";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, id);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            Timestamp ts = rs.getTimestamp("fechaHora");
+            LocalDateTime fechaHora = convertirTimestampSeguro(ts);
 
-                Integer idInterprete = rs.getObject("idInterprete") != null ? rs.getInt("idInterprete") : null;
+            Integer idInterprete = rs.getObject("idInterprete") != null ? rs.getInt("idInterprete") : null;
 
-                
-                lista.add(new Sesion(
-                    rs.getInt("id"),
-                    rs.getInt("idPaciente"),
-                    rs.getInt("idTerapeuta"),
-                    idInterprete,
-                    fechaHora,
-                    rs.getString("estado")
-                ));
-            }
+            lista.add(new Sesion(
+                rs.getInt("id"),
+                rs.getInt("idPaciente"),
+                rs.getInt("idTerapeuta"),
+                idInterprete,
+                fechaHora,
+                rs.getString("estado")
+            ));
         }
-        return lista;
     }
+    return lista;
+    }
+
     
     public void actualizarEstado(int sesionId, String nuevoEstado) throws SQLException {
         String sql = "UPDATE sesiones SET estado = ? WHERE id = ?";
@@ -92,7 +94,7 @@ public class SesionDAO {
 
         stmt.setString(4, s.getEstado()); // "solicitando"
         stmt.executeUpdate();
-    }
+    }    
 }
     public List<Sesion> obtenerSolicitudesPorTerapeuta(int idTerapeuta) throws SQLException {
     List<Sesion> lista = new ArrayList<>();
@@ -133,6 +135,16 @@ public class SesionDAO {
         }
     }
     
+    public void cancelarSesion(int sesionId, String motivo) throws SQLException {
+    String sql = "UPDATE sesiones SET estado = 'cancelada', motivoCancelacion = ? WHERE id = ?";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setString(1, motivo);
+        stmt.setInt(2, sesionId);
+        stmt.executeUpdate();
+    }
+}
+
+    
     public List<Sesion> obtenerSolicitudesParaInterprete(int idInterprete) throws SQLException {
     List<Sesion> lista = new ArrayList<>();
     String sql = "SELECT * FROM sesiones WHERE idInterprete = ? AND estado = 'en revision'";
@@ -152,6 +164,67 @@ public class SesionDAO {
         }
     return lista;
     }
+    public List<Sesion> listarRecordatoriosPorUsuario(int idUsuario) throws SQLException {
+    List<Sesion> lista = new ArrayList<>();
+    String sql = "SELECT * FROM sesiones WHERE (idPaciente = ? OR idTerapeuta = ? OR idInterprete = ?) " +
+                 "AND DATE(fechaHora) BETWEEN CURDATE() AND CURDATE() + INTERVAL 1 DAY";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, idUsuario);
+        stmt.setInt(2, idUsuario);
+        stmt.setInt(3, idUsuario);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            lista.add(new Sesion(
+                rs.getInt("id"),
+                rs.getInt("idPaciente"),
+                rs.getInt("idTerapeuta"),
+                rs.getObject("idInterprete") != null ? rs.getInt("idInterprete") : null,
+                convertirTimestampSeguro(rs.getTimestamp("fechaHora")),
+                rs.getString("estado")
+            ));
+        }
+    }
+    return lista;
+}
+public List<Sesion> listarHistorialPorUsuario(int idUsuario) throws SQLException {
+    List<Sesion> lista = new ArrayList<>();
+    String sql = "SELECT * FROM sesiones " +
+                 "WHERE (idPaciente = ? OR idTerapeuta = ? OR idInterprete = ?) " +
+                 "AND (fechaHora < NOW() OR estado = 'cancelada') " +
+                 "ORDER BY fechaHora DESC";
+
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, idUsuario);
+        stmt.setInt(2, idUsuario);
+        stmt.setInt(3, idUsuario);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            lista.add(new Sesion(
+                rs.getInt("id"),
+                rs.getInt("idPaciente"),
+                rs.getInt("idTerapeuta"),
+                rs.getObject("idInterprete") != null ? rs.getInt("idInterprete") : null,
+                convertirTimestampSeguro(rs.getTimestamp("fechaHora")),
+                rs.getString("estado")
+            ));
+        }
+    }
+    return lista;
+}
+
+    public boolean tieneSolicitudesPendientes(int idTerapeuta) throws SQLException {
+    String sql = "SELECT COUNT(*) FROM sesiones WHERE idTerapeuta = ? AND estado = 'solicitando'";
+    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, idTerapeuta);
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+    }
+    return false;
+}
+
     private LocalDateTime convertirTimestampSeguro(Timestamp ts) {
     return ts != null ? ts.toLocalDateTime() : null;
 }

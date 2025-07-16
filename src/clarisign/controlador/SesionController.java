@@ -8,6 +8,7 @@ import clarisign.DB.DBConnection;
 import clarisign.DB.SesionDAO;
 import clarisign.modelo.Sesion;
 import java.sql.Connection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -69,5 +70,24 @@ public class SesionController {
         return false;
     }
 }
-    
+    public List<Sesion> obtenerRecordatoriosPorUsuario(int idUsuario) {
+    try (Connection conn = DBConnection.getConnection()) {
+        SesionDAO dao = new SesionDAO(conn);
+        return dao.listarRecordatoriosPorUsuario(idUsuario);
+    } catch (Exception e) {
+        e.printStackTrace();
+        return Collections.emptyList();
+    }
+}
+
+public List<Sesion> obtenerHistorialPorUsuario(int idUsuario) {
+    try (Connection conn = DBConnection.getConnection()) {
+        SesionDAO dao = new SesionDAO(conn);
+        return dao.listarHistorialPorUsuario(idUsuario);
+    } catch (Exception e) {
+        e.printStackTrace();
+        return Collections.emptyList();
+    }
+}
+
 }

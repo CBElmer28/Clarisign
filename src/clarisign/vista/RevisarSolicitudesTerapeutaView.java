@@ -50,7 +50,7 @@ public class RevisarSolicitudesTerapeutaView extends JFrame {
 
         cargarSolicitudes(idTerapeuta);
         cargarInterpretes();
-
+        aplicarEstilo();
         setVisible(true);
     }
 
@@ -119,6 +119,36 @@ public class RevisarSolicitudesTerapeutaView extends JFrame {
         JOptionPane.showMessageDialog(this, "Error al asignar: " + e.getMessage());
     }
 }
+
+    private void aplicarEstilo() {
+    Color blanco = Color.WHITE;
+    Color grisClaro = new Color(245, 245, 245);
+    Color moradoPastel = new Color(180, 140, 200);
+    Color textoMorado = new Color(100, 60, 130);
+
+    Font fuenteLabel = new Font("SansSerif", Font.BOLD, 13);
+    Font fuenteCampo = new Font("SansSerif", Font.PLAIN, 13);
+    Font fuenteBoton = new Font("SansSerif", Font.BOLD, 14);
+
+    getContentPane().setBackground(grisClaro);
+
+    for (Component c : getContentPane().getComponents()) {
+        if (c instanceof JLabel label) {
+            label.setFont(fuenteLabel);
+            label.setForeground(textoMorado);
+        } else if (c instanceof JComboBox<?> combo) {
+            combo.setFont(fuenteCampo);
+        } else if (c instanceof JTextField txt) {
+            txt.setFont(fuenteCampo);
+        } else if (c instanceof JButton btn) {
+            btn.setFont(fuenteBoton);
+            btn.setBackground(moradoPastel);
+            btn.setForeground(blanco);
+            btn.setFocusPainted(false);
+            btn.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        }
+    }
+    }
 
     // Clase auxiliar para mostrar sesiones con nombre del paciente
     private class ComboItemSesion {

@@ -8,6 +8,7 @@ import clarisign.modelo.Paciente;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class PacienteDAO {
     private Connection conn;
@@ -80,9 +81,37 @@ public class PacienteDAO {
         }
     }
     return null;
+    }
+ 
+    public void migrarContraseñasPlanasABcrypt() throws SQLException {
+    String selectSql = "SELECT id, contrasena FROM pacientes";
+    String updateSql = "UPDATE pacientes SET contrasena = ? WHERE id = ?";
+
+    try (Statement selectStmt = conn.createStatement();
+         ResultSet rs = selectStmt.executeQuery(selectSql);
+         PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+
+        while (rs.next()) {
+            int id = rs.getInt("id");
+            String contrasenaActual = rs.getString("contrasena");
+
+            if (contrasenaActual == null || contrasenaActual.isEmpty()) continue;
+
+            // Detectar si ya está en formato bcrypt (no volver a hashear)
+            if (contrasenaActual.startsWith("$2a$") || contrasenaActual.startsWith("$2b$")) {
+                continue;
+            }
+
+            // Hashear contraseña con formato $2a$ (JBCrypt usa este por defecto)
+            String hash = BCrypt.hashpw(contrasenaActual, BCrypt.gensalt(10));
+
+            // Actualizar en la base
+            updateStmt.setString(1, hash);
+            updateStmt.setInt(2, id);
+            updateStmt.executeUpdate();
+        }
+    }
 }
-    
-    
 
     // Puedes agregar actualizarPaciente() y eliminarPaciente() si lo necesitas
 }

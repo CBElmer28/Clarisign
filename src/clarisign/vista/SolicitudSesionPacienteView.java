@@ -47,6 +47,7 @@ public class SolicitudSesionPacienteView extends javax.swing.JFrame {
         btnSolicitar.addActionListener(e -> enviarSolicitud());
 
         cargarTerapeutas();
+        aplicarEstilos();
         setVisible(true);
     }
 
@@ -116,6 +117,34 @@ public class SolicitudSesionPacienteView extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void aplicarEstilos() {
+    Color blanco = Color.WHITE;
+    Color grisClaro = new Color(245, 245, 245);
+    Color moradoPastel = new Color(180, 140, 200);
+    Color textoMorado = new Color(100, 60, 130);
+
+    Font fuenteLabel = new Font("SansSerif", Font.BOLD, 13);
+    Font fuenteCombo = new Font("SansSerif", Font.PLAIN, 13);
+    Font fuenteBoton = new Font("SansSerif", Font.BOLD, 14);
+
+    getContentPane().setBackground(grisClaro);
+
+    for (Component c : getContentPane().getComponents()) {
+        if (c instanceof JLabel label) {
+            label.setFont(fuenteLabel);
+            label.setForeground(textoMorado);
+        } else if (c instanceof JComboBox<?> combo) {
+            combo.setFont(fuenteCombo);
+        } else if (c instanceof JButton btn) {
+            btn.setFont(fuenteBoton);
+            btn.setBackground(moradoPastel);
+            btn.setForeground(blanco);
+            btn.setFocusPainted(false);
+            btn.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
+        }
+    }
+    }
 
     /**
      * @param args the command line arguments
